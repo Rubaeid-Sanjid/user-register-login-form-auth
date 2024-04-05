@@ -1,19 +1,32 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
+import { useState } from "react";
 
 const Register = () => {
+
+  const [regStatus, setRegStatus] = useState('');
+
   const handleRegister = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
 
+    setRegStatus('')
+
+    if(password.length < 6){
+      setRegStatus("Your password must be at least 6 character.")
+      return;
+  }
+
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
         const user = result.user;
         console.log(user);
+        setRegStatus('Registration completed.');
       })
       .catch((error) => {
         console.log(error.message);
+        setRegStatus(error.message);
       });
   };
   return (
@@ -41,6 +54,9 @@ const Register = () => {
             value="Register Now"
           />
         </form>
+        {
+          regStatus && <h3 className="mt-5 ">{regStatus.split('/')[1].split(')')[0]}</h3>
+        }
       </div>
     </div>
   );
