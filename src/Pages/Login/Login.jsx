@@ -10,11 +10,6 @@ const Login = () => {
     const password = e.target.password.value;
     setStatus("");
 
-    if (password.length < 6) {
-      setStatus("Your password must be at least 6 character.");
-      return;
-    }
-
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
         const user = result.user;
