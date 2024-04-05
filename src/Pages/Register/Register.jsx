@@ -10,6 +10,7 @@ const Register = () => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
+    const termsAndCondition = e.target.terms.checked;
 
     setRegStatus("");
 
@@ -23,6 +24,9 @@ const Register = () => {
       return;
     } else if (!/[!@#$%^&*()_+:;<>,.?/~-]/.test(password)) {
       setRegStatus("Password should contain at least one special character.");
+      return;
+    }else if(!termsAndCondition){
+      setRegStatus("Please accept our conditions")
       return;
     }
 
@@ -65,6 +69,11 @@ const Register = () => {
           >
             {showPassword ? "hide" : "Show"}
           </h3>
+
+          <div className="mb-5">
+            <input type="checkbox" name="terms" id="terms" />
+            <label htmlFor="terms">Accept our terms and condition</label>
+          </div>
           <input
             className="btn bg-blue-500 text-white rounded-xl py-2 px-4"
             type="submit"
