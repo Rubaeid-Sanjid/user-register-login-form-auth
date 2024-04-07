@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -9,6 +9,7 @@ const Register = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
+    const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
     const termsAndCondition = e.target.terms.checked;
@@ -26,16 +27,28 @@ const Register = () => {
     } else if (!/[!@#$%^&*()_+:;<>,.?/~-]/.test(password)) {
       setRegStatus("Password should contain at least one special character.");
       return;
-    }else if(!termsAndCondition){
-      setRegStatus("Please accept our conditions")
+    } else if (!termsAndCondition) {
+      setRegStatus("Please accept our conditions");
       return;
     }
 
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
         const user = result.user;
-        console.log(user);
+
         setRegStatus("Registration completed.");
+
+        updateProfile(user, {
+          displayName: name
+        }).then(() => {
+          alert("Profile updated!")
+        }).catch((error) => {
+          alert(error.message)
+        });
+
+        sendEmailVerification(user).then(() => {
+          alert("Email verification sent!")
+        });
       })
       .catch((error) => {
         console.log(error.message);
@@ -50,6 +63,13 @@ const Register = () => {
           className="flex flex-col w-3/4 mx-auto relative"
           onSubmit={handleRegister}
         >
+          <input
+            className="border-2 rounded-xl py-2 px-4 mb-5"
+            placeholder="Enter your name"
+            type="text"
+            name="name"
+            required
+          />
           <input
             className="border-2 rounded-xl py-2 px-4"
             placeholder="Enter your email"
@@ -66,7 +86,7 @@ const Register = () => {
           />
           <h3
             onClick={() => setShowpassword(!showPassword)}
-            className="cursor-pointer absolute top-[70px] right-6 text-lg"
+            className="cursor-pointer absolute top-[42%] right-6 text-lg"
           >
             {showPassword ? "hide" : "Show"}
           </h3>
@@ -80,11 +100,14 @@ const Register = () => {
             type="submit"
             value="Register Now"
           />
-          <h3 className="mt-5 flex justify-start">Already have an account? <Link className="ml-2 underline" to={"/login"}>Log In</Link></h3>
+          <h3 className="mt-5 flex justify-start">
+            Already have an account?{" "}
+            <Link className="ml-2 underline" to={"/login"}>
+              Log In
+            </Link>
+          </h3>
         </form>
-        {regStatus && (
-          <h3 className="mt-5 ">{regStatus}</h3>
-        )}
+        {regStatus && <h3 className="mt-5 ">{regStatus}</h3>}
       </div>
     </div>
   );

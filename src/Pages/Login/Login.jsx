@@ -22,7 +22,12 @@ const Login = () => {
       .then((result) => {
         const user = result.user;
         console.log(user);
-        setStatus("Logged in successfully.");
+        if(user.emailVerified){
+          setStatus("Logged in successfully.");
+        }else{
+          alert("Please verify your email.")
+        }
+
       })
       .catch((error) => {
         console.error(error);
