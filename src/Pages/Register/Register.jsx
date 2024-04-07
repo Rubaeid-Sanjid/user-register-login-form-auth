@@ -1,6 +1,7 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const [regStatus, setRegStatus] = useState("");
@@ -79,6 +80,7 @@ const Register = () => {
             type="submit"
             value="Register Now"
           />
+          <h3 className="mt-5 flex justify-start">Already have an account? <Link className="ml-2 underline" to={"/login"}>Log In</Link></h3>
         </form>
         {regStatus && (
           <h3 className="mt-5 ">{regStatus}</h3>
